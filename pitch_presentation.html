@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinSight AI - GenAI Financial Advisory Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            width: 90%;
+            max-width: 1200px;
+            height: 85vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 60px;
+            position: relative;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .slide-header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .slide-header h2 {
+            color: #764ba2;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .slide-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 20px;
+        }
+
+        .slide-content h3 {
+            color: #667eea;
+            font-size: 1.5em;
+            margin: 20px 0 15px 0;
+        }
+
+        .slide-content p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .slide-content ul {
+            margin: 15px 0 15px 30px;
+        }
+
+        .slide-content li {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .three-column {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .card h4 {
+            color: #667eea;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .stat-box .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-box .label {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .nav-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            color: #667eea;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .title-slide {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .title-slide h1 {
+            font-size: 3.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .title-slide .tagline {
+            font-size: 1.8em;
+            color: #764ba2;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .title-slide .team {
+            font-size: 1.2em;
+            color: #555;
+            margin-top: 40px;
+        }
+
+        .logo {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .problem-highlight {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .solution-highlight {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        .business-model-canvas {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+            height: 500px;
+            margin: 20px 0;
+        }
+
+        .bmc-box {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bmc-box h4 {
+            color: #667eea;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #667eea;
+            padding-bottom: 5px;
+        }
+
+        .bmc-box ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            font-size: 0.85em;
+        }
+
+        .bmc-box li {
+            margin: 5px 0;
+            font-size: 0.85em;
+        }
+
+        .key-partners { grid-column: 1; grid-row: 1 / 3; }
+        .key-activities { grid-column: 2; grid-row: 1; }
+        .key-resources { grid-column: 2; grid-row: 2; }
+        .value-proposition { grid-column: 3; grid-row: 1 / 3; background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%); }
+        .customer-relationships { grid-column: 4; grid-row: 1; }
+        .channels { grid-column: 4; grid-row: 2; }
+        .customer-segments { grid-column: 5; grid-row: 1 / 3; }
+        .cost-structure { grid-column: 1 / 4; grid-row: 3; }
+        .revenue-streams { grid-column: 4 / 6; grid-row: 3; }
+
+        .innovation-concept {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 15px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .innovation-concept h4 {
+            color: #667eea;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 1s ease;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        @media print {
+            .slide {
+                page-break-after: always;
+                display: block !important;
+                height: auto;
+            }
+            .navigation, .slide-number {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active title-slide">
+            <div class="logo">🚀💡</div>
+            <h1>FinSight AI</h1>
+            <p class="tagline">Democratizing Financial Intelligence with Generative AI</p>
+            <div class="three-column" style="margin-top: 50px;">
+                <div class="stat-box">
+                    <div class="number">$250B</div>
+                    <div class="label">GenAI Market in Finance</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">85%</div>
+                    <div class="label">SMEs Lack Advisory Access</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number">10x</div>
+                    <div class="label">Cost Reduction Potential</div>
+                </div>
+            </div>
+            <div class="team">
+                <strong>Group 101, Tutorial 19</strong><br>
+                Abraham Kuriakose | Vinayak Nair | Aditya Moon | Yash Sable
+            </div>
+        </div>
+
+        <!-- Slide 2: Introduction & Background -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>📊 Industry Background</h2>
+            </div>
+            <div class="slide-content">
+                <h3>The Financial Services Landscape</h3>
+                <div class="two-column">
+                    <div>
+                        <p><strong>Industry Overview:</strong></p>
+                        <ul>
+                            <li><span class="highlight">$250 billion</span> GenAI market potential in finance</li>
+                            <li>Largest among all industries (Healthcare: $200B, Manufacturing: $150B)</li>
+                            <li>JPMorgan: $15B annual tech investment</li>
+                            <li>Goldman Sachs: Strategic AI partnerships</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p><strong>Key Players:</strong></p>
+                        <ul>
+                            <li>JPMorgan Chase - IndexGPT platform</li>
+                            <li>Goldman Sachs - GS AI Platform</li>
+                            <li>Bank of America - $3.5B AI investment</li>
+                            <li>Morgan Stanley - Next Best Action AI</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="problem-highlight">
+                    <h3>🎯 The Problem</h3>
+                    <p><strong>Small-to-Medium Enterprises (SMEs) and retail investors face a critical advisory gap:</strong></p>
+                    <ul>
+                        <li><strong>85%</strong> of SMEs lack access to sophisticated financial advisory tools</li>
+                        <li>Traditional advisory services cost <strong>$5,000-50,000/year</strong> - prohibitive for smaller businesses</li>
+                        <li>Manual financial analysis is <strong>time-consuming</strong> (20-40 hours/month)</li>
+                        <li>Retail investors rely on <strong>generic, one-size-fits-all</strong> advice</li>
+                        <li>Existing solutions serve only <strong>institutional clients</strong> and high-net-worth individuals</li>
+                    </ul>
+                </div>
+
+                <h3>Existing Solutions & Their Limitations</h3>
+                <table>
+                    <tr>
+                        <th>Solution</th>
+                        <th>Target Market</th>
+                        <th>Limitation</th>
+                    </tr>
+                    <tr>
+                        <td>Traditional Advisory Firms</td>
+                        <td>Large Enterprises</td>
+                        <td>Too expensive for SMEs ($50K+/year)</td>
+                    </tr>
+                    <tr>
+                        <td>Robo-advisors (Betterment)</td>
+                        <td>Retail Investors</td>
+                        <td>Limited to basic portfolio allocation</td>
+                    </tr>
+                    <tr>
+                        <td>DIY Tools (Excel, QuickBooks)</td>
+                        <td>Small Businesses</td>
+                        <td>No intelligent insights or predictions</td>
+                    </tr>
+                    <tr>
+                        <td>Generic AI Chatbots</td>
+                        <td>General Public</td>
+                        <td>Not finance-specific, compliance issues</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Slide 3: Our Company -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>🏢 Introducing FinSight AI</h2>
+            </div>
+            <div class="slide-content">
+                <div class="solution-highlight">
+                    <h3>Our Mission</h3>
+                    <p style="font-size: 1.2em; font-weight: 500;">
+                        To democratize institutional-grade financial intelligence, making sophisticated AI-powered financial advisory
+                        accessible and affordable for every SME and retail investor.
+                    </p>
+                </div>
+
+                <div class="two-column" style="margin-top: 30px;">
+                    <div class="card">
+                        <h4>🎯 Target Industry</h4>
+                        <p><strong>Primary:</strong> Small-to-Medium Financial Services</p>
+                        <ul>
+                            <li>SMEs (10-500 employees)</li>
+                            <li>Independent financial advisors</li>
+                            <li>Wealth management boutiques</li>
+                            <li>Credit unions</li>
+                        </ul>
+                        <p><strong>Secondary:</strong> Retail Investors & Freelancers</p>
+                        <ul>
+                            <li>Individual investors with $50K-$1M portfolios</li>
+                            <li>Freelance professionals</li>
+                            <li>Small business owners</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h4>💪 Our Competitive Advantage</h4>
+                        <ul>
+                            <li><strong>Affordability:</strong> 90% cost reduction vs traditional advisory</li>
+                            <li><strong>Accessibility:</strong> 24/7 AI-powered insights</li>
+                            <li><strong>Customization:</strong> Industry-specific financial models</li>
+                            <li><strong>Compliance:</strong> Built-in regulatory frameworks</li>
+                            <li><strong>Integration:</strong> Connects with 500+ data sources</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Why Now?</h3>
+                <div class="three-column">
+                    <div class="card">
+                        <h4>📈 Market Timing</h4>
+                        <p>GenAI maturity reached production-ready stage in 2023-2024</p>
+                    </div>
+                    <div class="card">
+                        <h4>💼 Market Need</h4>
+                        <p>Post-pandemic SMEs demand digital transformation tools</p>
+                    </div>
+                    <div class="card">
+                        <h4>⚖️ Regulatory Support</h4>
+                        <p>Clear AI governance frameworks emerging (SEC, FINRA)</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Market Size & Opportunity</h3>
+                <div class="two-column">
+                    <div class="stat-box">
+                        <div class="number">32M</div>
+                        <div class="label">SMEs globally (potential customers)</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">$18B</div>
+                        <div class="label">Addressable market by 2028</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Technology -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>🤖 Our Technology: Generative AI</h2>
+            </div>
+            <div class="slide-content">
+                <h3>What is Generative AI?</h3>
+                <p>
+                    <strong>Generative AI</strong> refers to artificial intelligence systems that can create new content—text, code, insights,
+                    predictions—based on patterns learned from vast amounts of training data. Unlike traditional AI that classifies or predicts,
+                    GenAI <span class="highlight">generates</span> novel outputs.
+                </p>
+
+                <div class="two-column" style="margin-top: 25px;">
+                    <div class="card">
+                        <h4>Core Technologies</h4>
+                        <ul>
+                            <li><strong>Large Language Models (LLMs):</strong> GPT-4, Claude, PaLM</li>
+                            <li><strong>Transformer Architecture:</strong> Attention mechanisms for context understanding</li>
+                            <li><strong>Fine-tuning:</strong> Specialized training on financial data</li>
+                            <li><strong>Retrieval-Augmented Generation:</strong> Real-time data integration</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Key Capabilities</h4>
+                        <ul>
+                            <li>Natural language understanding & generation</li>
+                            <li>Pattern recognition in financial data</li>
+                            <li>Contextual reasoning & predictions</li>
+                            <li>Document analysis & synthesis</li>
+                            <li>Multi-modal data processing</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">How FinSight AI Innovates with GenAI</h3>
+
+                <div class="innovation-concept">
+                    <h4>🔬 1. Financial-Specific Fine-Tuning</h4>
+                    <p>We've fine-tuned base LLMs on proprietary datasets:</p>
+                    <ul>
+                        <li><strong>10 years</strong> of financial statements from 50,000+ companies</li>
+                        <li><strong>Regulatory documents</strong> (SEC filings, compliance frameworks)</li>
+                        <li><strong>Market data</strong> (historical trends, economic indicators)</li>
+                        <li><strong>Industry-specific knowledge</strong> (sector benchmarks, KPIs)</li>
+                    </ul>
+                    <p><strong>Result:</strong> 95% accuracy in financial document analysis vs 70% for generic LLMs</p>
+                </div>
+
+                <div class="innovation-concept">
+                    <h4>🔗 2. Real-Time Data Integration (RAG)</h4>
+                    <p>Retrieval-Augmented Generation connects to live financial data:</p>
+                    <ul>
+                        <li>Real-time market data feeds (stocks, commodities, forex)</li>
+                        <li>Company financial APIs (accounting systems, banking data)</li>
+                        <li>Economic indicators (Fed data, employment stats, GDP)</li>
+                        <li>News & sentiment analysis (Bloomberg, Reuters, social media)</li>
+                    </ul>
+                    <p><strong>Innovation:</strong> Unlike static models, our AI provides <span class="highlight">current, context-aware</span> advice</p>
+                </div>
+
+                <div class="innovation-concept">
+                    <h4>⚖️ 3. Compliance-by-Design Architecture</h4>
+                    <p>Built-in regulatory compliance through:</p>
+                    <ul>
+                        <li><strong>Guardrails:</strong> Prevents non-compliant recommendations</li>
+                        <li><strong>Audit trails:</strong> Complete decision transparency (SEC requirement)</li>
+                        <li><strong>Explainable AI:</strong> Human-readable reasoning for every output</li>
+                        <li><strong>Risk overlays:</strong> Automated risk assessment frameworks</li>
+                    </ul>
+                </div>
+
+                <div class="innovation-concept">
+                    <h4>🎨 4. Multi-Modal Intelligence</h4>
+                    <p>Processing diverse financial information:</p>
+                    <ul>
+                        <li>Text (reports, emails, contracts)</li>
+                        <li>Structured data (spreadsheets, databases)</li>
+                        <li>Visual data (charts, invoices, receipts)</li>
+                        <li>Time-series (market trends, cash flows)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Our Product/Solution -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>💎 Our Product: The FinSight AI Platform</h2>
+            </div>
+            <div class="slide-content">
+                <h3>Product Overview</h3>
+                <p style="font-size: 1.15em;">
+                    <strong>FinSight AI Platform</strong> is a comprehensive, AI-powered financial intelligence suite that provides
+                    SMEs and retail investors with institutional-grade analysis, personalized recommendations, and automated advisory services.
+                </p>
+
+                <h3 style="margin-top: 25px;">Core Features</h3>
+                <div class="three-column">
+                    <div class="card">
+                        <h4>📊 Smart Financial Analysis</h4>
+                        <ul>
+                            <li>Automated P&L analysis</li>
+                            <li>Cash flow forecasting</li>
+                            <li>Scenario modeling</li>
+                            <li>Risk assessment</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>💬 AI Advisory Chatbot</h4>
+                        <ul>
+                            <li>24/7 financial Q&A</li>
+                            <li>Natural language queries</li>
+                            <li>Contextual recommendations</li>
+                            <li>Multi-language support</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>📈 Investment Intelligence</h4>
+                        <ul>
+                            <li>Portfolio optimization</li>
+                            <li>Market opportunity alerts</li>
+                            <li>Thematic investing insights</li>
+                            <li>ESG scoring</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="three-column" style="margin-top: 15px;">
+                    <div class="card">
+                        <h4>📄 Document Intelligence</h4>
+                        <ul>
+                            <li>Contract analysis</li>
+                            <li>Invoice processing</li>
+                            <li>Report generation</li>
+                            <li>Regulatory filing assistance</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>⚡ Real-Time Alerts</h4>
+                        <ul>
+                            <li>Anomaly detection</li>
+                            <li>Compliance warnings</li>
+                            <li>Market opportunities</li>
+                            <li>Cash flow alerts</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>🔌 API Marketplace</h4>
+                        <ul>
+                            <li>Banking integrations</li>
+                            <li>Accounting software</li>
+                            <li>Market data feeds</li>
+                            <li>Third-party apps</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">🌟 The Novelty: What Makes Us Different</h3>
+
+                <div class="two-column">
+                    <div class="solution-highlight">
+                        <h4>1. SME-Specific Intelligence</h4>
+                        <p><strong>Existing solutions</strong> use generic models designed for large enterprises.</p>
+                        <p><strong>FinSight innovation:</strong> AI trained specifically on SME financial patterns, challenges, and opportunities. We understand that SMEs face different financial dynamics than Fortune 500 companies.</p>
+                    </div>
+                    <div class="solution-highlight">
+                        <h4>2. Explainable AI (XAI)</h4>
+                        <p><strong>Problem:</strong> Most AI provides "black box" recommendations.</p>
+                        <p><strong>Our solution:</strong> Every recommendation includes step-by-step reasoning, data sources, confidence levels, and alternative scenarios—building trust and meeting regulatory requirements.</p>
+                    </div>
+                </div>
+
+                <div class="two-column" style="margin-top: 15px;">
+                    <div class="solution-highlight">
+                        <h4>3. Platform Ecosystem Model</h4>
+                        <p><strong>Traditional:</strong> Closed, proprietary systems.</p>
+                        <p><strong>FinSight:</strong> Open platform with API marketplace allowing third-party developers to build specialized financial tools, creating network effects and continuous innovation.</p>
+                    </div>
+                    <div class="solution-highlight">
+                        <h4>4. Hybrid AI + Human Model</h4>
+                        <p><strong>Not replacing advisors:</strong> Augmenting them.</p>
+                        <p><strong>Innovation:</strong> "AI-first, human-verified" approach where complex decisions can be escalated to certified advisors in our network—best of both worlds.</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Pricing Strategy</h3>
+                <table>
+                    <tr>
+                        <th>Tier</th>
+                        <th>Target</th>
+                        <th>Price</th>
+                        <th>Key Features</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Starter (Free)</strong></td>
+                        <td>Freelancers, Solo</td>
+                        <td>$0/month</td>
+                        <td>Basic chatbot, 10 queries/month</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Professional</strong></td>
+                        <td>Small Businesses</td>
+                        <td>$199/month</td>
+                        <td>Full analysis, unlimited queries, API access</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Enterprise</strong></td>
+                        <td>Mid-size Companies</td>
+                        <td>$999/month</td>
+                        <td>Multi-user, custom models, dedicated support</td>
+                    </tr>
+                    <tr>
+                        <td><strong>API Platform</strong></td>
+                        <td>Developers/Advisors</td>
+                        <td>Pay-per-use</td>
+                        <td>$0.01/query, build custom applications</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Slide 6: Innovation Concepts Part 1 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>🔬 Innovation Concepts (Part 1)</h2>
+            </div>
+            <div class="slide-content">
+                <h3>1. Platform Innovation & Web APIs</h3>
+                <div class="innovation-concept">
+                    <h4>FinSight as a Two-Sided Platform</h4>
+                    <p><strong>Platform Theory (Gawer & Cusumano):</strong> Platforms create value by facilitating interactions between user groups and enabling complementary innovation.</p>
+
+                    <div class="two-column" style="margin-top: 15px;">
+                        <div>
+                            <p><strong>Side 1: End Users (SMEs/Investors)</strong></p>
+                            <ul>
+                                <li>Access AI financial intelligence</li>
+                                <li>Use integrated third-party tools</li>
+                                <li>Benefit from ecosystem innovation</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <p><strong>Side 2: Developers/Partners</strong></p>
+                            <ul>
+                                <li>Build apps on our API</li>
+                                <li>Access our AI models</li>
+                                <li>Reach our customer base</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 15px;"><strong>Network Effects:</strong></p>
+                    <ul>
+                        <li>More users → More data → Better AI models → Attracts more users</li>
+                        <li>More developers → More apps → More value for users → Platform stickiness</li>
+                        <li><span class="highlight">Goal: Reach critical mass of 10,000 users to trigger exponential growth</span></li>
+                    </ul>
+
+                    <h4 style="margin-top: 20px;">Our Web API Strategy</h4>
+                    <table>
+                        <tr>
+                            <th>API Service</th>
+                            <th>Functionality</th>
+                            <th>Use Case</th>
+                        </tr>
+                        <tr>
+                            <td>Financial Analysis API</td>
+                            <td>Upload financial data, get AI insights</td>
+                            <td>Accounting software integration</td>
+                        </tr>
+                        <tr>
+                            <td>Advisory Chatbot API</td>
+                            <td>Embed our AI advisor in any app</td>
+                            <td>Banking apps, fintech platforms</td>
+                        </tr>
+                        <tr>
+                            <td>Market Intelligence API</td>
+                            <td>Real-time market insights & predictions</td>
+                            <td>Investment platforms, dashboards</td>
+                        </tr>
+                        <tr>
+                            <td>Document Processing API</td>
+                            <td>Extract financial data from documents</td>
+                            <td>Lending platforms, due diligence tools</td>
+                        </tr>
+                    </table>
+
+                    <p><strong>Revenue Share Model:</strong> 70% to developers, 30% to FinSight (similar to Apple App Store)</p>
+                </div>
+
+                <h3 style="margin-top: 25px;">2. Open Innovation Strategy</h3>
+                <div class="innovation-concept">
+                    <h4>Embracing External Knowledge (Chesbrough Model)</h4>
+                    <p><strong>Philosophy:</strong> The best ideas come from everywhere—inside and outside our company.</p>
+
+                    <div class="two-column" style="margin-top: 15px;">
+                        <div class="card">
+                            <h4>Inbound Innovation</h4>
+                            <ul>
+                                <li><strong>University Partnerships:</strong> Collaborate with MIT, Stanford on financial AI research</li>
+                                <li><strong>Open Source Integration:</strong> Leverage Hugging Face models, PyTorch</li>
+                                <li><strong>Data Partnerships:</strong> Bloomberg, Refinitiv for market data</li>
+                                <li><strong>Customer Co-Creation:</strong> Beta testing with 100 SMEs for feedback</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h4>Outbound Innovation</h4>
+                            <ul>
+                                <li><strong>Open API:</strong> Let others build on our platform</li>
+                                <li><strong>Research Publication:</strong> Share non-competitive findings</li>
+                                <li><strong>Open Datasets:</strong> Release anonymized SME financial benchmarks</li>
+                                <li><strong>Developer Community:</strong> Host hackathons, provide free API tiers</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 15px;"><strong>Strategic Benefit:</strong> Faster innovation cycles, reduced R&D costs, attract top talent, build ecosystem loyalty</p>
+                </div>
+
+                <h3 style="margin-top: 25px;">3. Crowdsourcing & Open Data</h3>
+                <div class="innovation-concept">
+                    <h4>Leveraging Collective Intelligence</h4>
+
+                    <p><strong>Crowdsourced Financial Benchmarks:</strong></p>
+                    <ul>
+                        <li>SMEs opt-in to share anonymized financial metrics</li>
+                        <li>AI aggregates data to create industry benchmarks</li>
+                        <li>All participants get access to comparative insights</li>
+                        <li><strong>Value:</strong> "How does my business compare to similar companies?"</li>
+                    </ul>
+
+                    <p style="margin-top: 15px;"><strong>Community-Driven Model Improvement:</strong></p>
+                    <ul>
+                        <li>Users rate AI recommendations (upvote/downvote)</li>
+                        <li>Feedback loop improves model accuracy</li>
+                        <li>Community validates emerging financial insights</li>
+                    </ul>
+
+                    <p style="margin-top: 15px;"><strong>Open Data Utilization:</strong></p>
+                    <ul>
+                        <li>Federal Reserve economic data (FRED)</li>
+                        <li>SEC EDGAR filings (public company data)</li>
+                        <li>Open banking data (with user consent - PSD2 in EU)</li>
+                        <li>Government economic indicators</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Innovation Concepts Part 2 -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>🔬 Innovation Concepts (Part 2)</h2>
+            </div>
+            <div class="slide-content">
+                <h3>4. Dominant Design Potential</h3>
+                <div class="innovation-concept">
+                    <h4>Can GenAI Become the Dominant Design in Financial Advisory?</h4>
+                    <p><strong>Dominant Design Theory (Utterback & Abernathy):</strong> A single architecture becomes the de facto standard after a period of experimentation.</p>
+
+                    <div class="two-column" style="margin-top: 15px;">
+                        <div class="card">
+                            <h4>✅ Evidence FOR Dominant Design</h4>
+                            <ul>
+                                <li><strong>Industry Convergence:</strong> JPMorgan, Goldman Sachs, Morgan Stanley all investing in similar GenAI architectures</li>
+                                <li><strong>Technical Standardization:</strong> Transformer models becoming universal (like PC architecture in computing)</li>
+                                <li><strong>Decreasing Experimentation:</strong> Moving from exploration to optimization phase</li>
+                                <li><strong>Regulatory Frameworks:</strong> Emerging standards (SEC AI guidelines) favor consistent approaches</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h4>⚠️ Challenges to Dominance</h4>
+                            <ul>
+                                <li><strong>Rapid Evolution:</strong> AI technology still changing quickly</li>
+                                <li><strong>Competing Paradigms:</strong> Cloud-based LLMs vs on-premise models</li>
+                                <li><strong>Regulatory Uncertainty:</strong> Rules may favor diverse approaches</li>
+                                <li><strong>Customization Needs:</strong> Different institutions require different solutions</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 15px;"><strong>Our Position:</strong></p>
+                    <p>GenAI is <span class="highlight">emerging as dominant design</span> for financial intelligence, but we're in the <strong>"era of ferment"</strong>.
+                    FinSight aims to establish our platform architecture as the standard for SME financial advisory through:</p>
+                    <ul>
+                        <li>Early market entry (first-mover advantage)</li>
+                        <li>Open API standards (encouraging industry adoption)</li>
+                        <li>Network effects (platform stickiness)</li>
+                        <li>Regulatory compliance (becoming the "safe choice")</li>
+                    </ul>
+
+                    <div class="progress-bar" style="margin-top: 20px;">
+                        <div class="progress-fill" style="width: 65%;">65% toward Dominant Design</div>
+                    </div>
+                    <p style="font-size: 0.9em; color: #666; margin-top: 5px;">Industry consensus emerging, but still evolving (2024 estimate)</p>
+                </div>
+
+                <h3 style="margin-top: 25px;">5. Disruptive Innovation Analysis</h3>
+                <div class="innovation-concept">
+                    <h4>FinSight AI as a Disruptive Innovation (Christensen Framework)</h4>
+
+                    <p><strong>Disruption Type: <span class="highlight">Low-End Disruption</span></strong></p>
+                    <p>We target overserved customers (SMEs) who don't need all features of high-end solutions but are ignored by incumbent providers.</p>
+
+                    <table style="margin-top: 15px;">
+                        <tr>
+                            <th>Characteristic</th>
+                            <th>Traditional Advisory (Sustaining)</th>
+                            <th>FinSight AI (Disruptive)</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Target Customer</strong></td>
+                            <td>Large enterprises, HNW individuals</td>
+                            <td>SMEs, retail investors (underserved)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Performance Metric</strong></td>
+                            <td>Personalization, relationship depth</td>
+                            <td>Affordability, accessibility, speed</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Price Point</strong></td>
+                            <td>$50,000+/year</td>
+                            <td>$199-999/month (90% cheaper)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Business Model</strong></td>
+                            <td>High-touch, labor-intensive</td>
+                            <td>Technology-enabled, scalable</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Initial Quality</strong></td>
+                            <td>Premium from day one</td>
+                            <td>"Good enough" for SMEs, improving rapidly</td>
+                        </tr>
+                    </table>
+
+                    <h4 style="margin-top: 20px;">Disruption Trajectory</h4>
+                    <div class="three-column">
+                        <div class="card">
+                            <h4>Phase 1: Foothold (Year 1-2)</h4>
+                            <p>Capture ignored SME segment with "good enough" AI advisory at fraction of traditional cost</p>
+                        </div>
+                        <div class="card">
+                            <h4>Phase 2: Improvement (Year 3-4)</h4>
+                            <p>Enhance capabilities through data/feedback loops, moving upmarket to larger SMEs</p>
+                        </div>
+                        <div class="card">
+                            <h4>Phase 3: Disruption (Year 5+)</h4>
+                            <p>Compete with traditional advisors even for demanding clients as AI surpasses human performance</p>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 15px;"><strong>Why Incumbents Won't Respond Effectively:</strong></p>
+                    <ul>
+                        <li><strong>Profit structure:</strong> Cannibalize high-margin advisory services</li>
+                        <li><strong>Customer focus:</strong> Serving high-end clients, view SMEs as unprofitable</li>
+                        <li><strong>Cultural barriers:</strong> Traditional advisory firms resist tech-driven models</li>
+                        <li><strong>Innovator's dilemma:</strong> Rational decision to ignore low-end until too late</li>
+                    </ul>
+
+                    <p><strong>Potential to Disrupt:</strong> <span class="highlight">HIGH</span> - Following classic low-end disruption playbook</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Value Chain & Business Model -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>🔗 Value Chain & Business Model</h2>
+            </div>
+            <div class="slide-content">
+                <h3>6. Value Chain Analysis (Porter)</h3>
+                <div class="innovation-concept">
+                    <h4>Where FinSight Fits in Financial Services Value Chain</h4>
+
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 15px 0;">
+                        <p><strong>Traditional Financial Advisory Value Chain:</strong></p>
+                        <p style="margin-top: 10px; font-family: monospace; font-size: 0.95em;">
+                            Data Collection → Analysis & Research → Advisory & Recommendations → Execution → Monitoring & Reporting
+                        </p>
+                    </div>
+
+                    <table style="margin-top: 20px;">
+                        <tr>
+                            <th>Value Chain Stage</th>
+                            <th>Traditional Approach</th>
+                            <th>FinSight AI Innovation</th>
+                            <th>Value Created</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Data Collection</strong></td>
+                            <td>Manual data entry, client meetings</td>
+                            <td>Automated API integrations, document scanning</td>
+                            <td>95% time reduction</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Analysis & Research</strong></td>
+                            <td>Human analysts (20-40 hrs)</td>
+                            <td>GenAI analysis (minutes)</td>
+                            <td>100x speed increase</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Advisory</strong></td>
+                            <td>In-person consultations</td>
+                            <td>AI chatbot + human escalation</td>
+                            <td>24/7 availability</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Execution</strong></td>
+                            <td>Partner with platforms</td>
+                            <td>Direct integration with brokers/banks</td>
+                            <td>Seamless implementation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Monitoring</strong></td>
+                            <td>Quarterly reviews</td>
+                            <td>Real-time alerts & continuous tracking</td>
+                            <td>Proactive risk management</td>
+                        </tr>
+                    </table>
+
+                    <p style="margin-top: 15px;"><strong>Key Insight:</strong> FinSight AI <span class="highlight">compresses the value chain</span>, delivering end-to-end advisory in automated, scalable way while maintaining quality.</p>
+
+                    <p><strong>Strategic Position:</strong> We operate as <strong>infrastructure layer</strong> that can:</p>
+                    <ul>
+                        <li>Serve end-users directly (B2C)</li>
+                        <li>Power other advisory firms (B2B - "AI-as-a-Service")</li>
+                        <li>Integrate into banking/fintech platforms (B2B2C)</li>
+                    </ul>
+                </div>
+
+                <h3 style="margin-top: 30px;">7. Business Model Canvas</h3>
+                <div class="business-model-canvas">
+                    <div class="bmc-box key-partners">
+                        <h4>Key Partners</h4>
+                        <ul>
+                            <li>Cloud providers (AWS, Azure)</li>
+                            <li>AI model providers (OpenAI, Anthropic)</li>
+                            <li>Data vendors (Bloomberg, Refinitiv)</li>
+                            <li>Banking APIs (Plaid, Yodlee)</li>
+                            <li>Accounting software (QuickBooks, Xero)</li>
+                            <li>Regulatory consultants</li>
+                            <li>University research partners</li>
+                        </ul>
+                    </div>
+
+                    <div class="bmc-box key-activities">
+                        <h4>Key Activities</h4>
+                        <ul>
+                            <li>AI model training & fine-tuning</li>
+                            <li>Platform development</li>
+                            <li>Data pipeline management</li>
+                            <li>Compliance monitoring</li>
+                            <li>Customer success & support</li>
+                            <li>API ecosystem development</li>
+                        </ul>
+                    </div>
+
+                    <div class="bmc-box key-resources">
+                        <h4>Key Resources</h4>
+                        <ul>
+                            <li>Proprietary AI models</li>
+                            <li>Financial training datasets</li>
+                            <li>Technology platform</li>
+                            <li>Engineering team</li>
+                            <li>Financial domain experts</li>
+                            <li>Brand & reputation</li>
+                        </ul>
+                    </div>
+
+                    <div class="bmc-box value-proposition">
+                        <h4>Value Proposition</h4>
+                        <ul>
+                            <li><strong>For SMEs:</strong> Institutional-grade financial intelligence at 10% of traditional cost</li>
+                            <li><strong>Accessibility:</strong> 24/7 AI advisor, no minimum assets</li>
+                            <li><strong>Accuracy:</strong> Data-driven insights, reduce human bias</li>
+                            <li><strong>Speed:</strong> Instant analysis vs weeks</li>
+                            <li><strong>Integration:</strong> Works with existing tools</li>
+                            <li><strong>Compliance:</strong> Built-in regulatory frameworks</li>
+                        </ul>
+                    </div>
+
+                    <div class="bmc-box customer-relationships">
+                        <h4>Customer Relationships</h4>
+                        <ul>
+                            <li>Self-service platform</li>
+                            <li>AI chatbot support</li>
+                            <li>Community forums</li>
+                            <li>Premium: dedicated account manager</li>
+                            <li>Educational content</li>
+                            <li>User feedback loops</li>
+                        </ul>
+                    </div>
+
+                    <div class="bmc-box channels">
+                        <h4>Channels</h4>
+                        <ul>
+                            <li>Direct website (SaaS)</li>
+                            <li>Mobile app (iOS/Android)</li>
+                            <li>API marketplace</li>
+                            <li>Partner integrations</li>
+                            <li>Content marketing (SEO)</li>
+                            <li>Referral programs</li>
+                        </ul>
+                    </div>
+
+                    <div class="bmc-box customer-segments">
+                        <h4>Customer Segments</h4>
+                        <ul>
+                            <li><strong>Primary:</strong> SMEs (10-500 employees)</li>
+                            <li>Independent financial advisors</li>
+                            <li>Retail investors ($50K-$1M)</li>
+                            <li>Freelancers & gig workers</li>
+                            <li><strong>B2B:</strong> Fintech platforms</li>
+                            <li>Credit unions</li>
+                            <li>Regional banks</li>
+                        </ul>
+                    </div>
+
+                    <div class="bmc-box cost-structure">
+                        <h4>Cost Structure</h4>
+                        <ul>
+                            <li><strong>Variable:</strong> AI compute costs (AWS/inference), data feeds (per user), payment processing</li>
+                            <li><strong>Fixed:</strong> Engineering salaries, infrastructure, compliance/legal, marketing, office/admin</li>
+                            <li><strong>Key driver:</strong> Compute costs scale with users, but decreasing per-unit cost (economies of scale)</li>
+                        </ul>
+                    </div>
+
+                    <div class="bmc-box revenue-streams">
+                        <h4>Revenue Streams</h4>
+                        <ul>
+                            <li><strong>SaaS Subscriptions:</strong> $199-999/month (80% of revenue)</li>
+                            <li><strong>API Usage:</strong> Pay-per-query model (10%)</li>
+                            <li><strong>Platform Commission:</strong> 30% of third-party app revenue (5%)</li>
+                            <li><strong>Premium Services:</strong> Custom models, consulting (5%)</li>
+                            <li><strong>Target:</strong> $10M ARR by Year 3</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Market Strategy & Traction -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>📈 Go-to-Market Strategy & Traction</h2>
+            </div>
+            <div class="slide-content">
+                <h3>Three-Phase Launch Strategy</h3>
+                <div class="three-column">
+                    <div class="card">
+                        <h4>Phase 1: Beta Launch (Months 1-6)</h4>
+                        <ul>
+                            <li><strong>Target:</strong> 100 beta customers</li>
+                            <li><strong>Focus:</strong> Product-market fit</li>
+                            <li>Intensive user feedback</li>
+                            <li>Refine AI models</li>
+                            <li>Build case studies</li>
+                            <li><strong>Cost:</strong> Free for beta users</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Phase 2: Initial Launch (Months 7-18)</h4>
+                        <ul>
+                            <li><strong>Target:</strong> 1,000 paying customers</li>
+                            <li><strong>Revenue:</strong> $2.4M ARR</li>
+                            <li>Content marketing (SEO)</li>
+                            <li>Partnership with accounting firms</li>
+                            <li>Launch API marketplace</li>
+                            <li>Hire sales team</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Phase 3: Scale (Months 19-36)</h4>
+                        <ul>
+                            <li><strong>Target:</strong> 10,000 customers</li>
+                            <li><strong>Revenue:</strong> $24M ARR</li>
+                            <li>Geographic expansion (EU, Asia)</li>
+                            <li>Enterprise partnerships</li>
+                            <li>Platform ecosystem with 50+ apps</li>
+                            <li>Series A fundraise ($20M)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Early Traction & Validation</h3>
+                <div class="two-column">
+                    <div class="card">
+                        <h4>✅ What We've Accomplished</h4>
+                        <ul>
+                            <li><strong>Prototype:</strong> Working MVP with core features</li>
+                            <li><strong>Pilot Customers:</strong> 25 SMEs testing platform</li>
+                            <li><strong>Early Metrics:</strong> 4.5/5 user satisfaction</li>
+                            <li><strong>Team:</strong> 5 co-founders (2 AI engineers, 2 finance experts, 1 product)</li>
+                            <li><strong>Partnerships:</strong> LOIs with 3 accounting firms</li>
+                            <li><strong>IP:</strong> Patent pending on compliance-aware GenAI architecture</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>📊 Key Performance Indicators</h4>
+                        <ul>
+                            <li><strong>User Engagement:</strong> Avg 45 min/week on platform</li>
+                            <li><strong>Query Accuracy:</strong> 92% user-rated "helpful"</li>
+                            <li><strong>Cost Savings:</strong> Users report $15K/year saved</li>
+                            <li><strong>NPS Score:</strong> 68 (excellent for B2B SaaS)</li>
+                            <li><strong>Referral Rate:</strong> 35% of users referred others</li>
+                            <li><strong>Retention:</strong> 85% monthly retention (pilot)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Competitive Landscape</h3>
+                <table>
+                    <tr>
+                        <th>Competitor</th>
+                        <th>Type</th>
+                        <th>Strength</th>
+                        <th>Our Advantage</th>
+                    </tr>
+                    <tr>
+                        <td>Traditional Advisory Firms</td>
+                        <td>Human advisors</td>
+                        <td>Deep relationships, trust</td>
+                        <td>10x cheaper, faster, 24/7 availability</td>
+                    </tr>
+                    <tr>
+                        <td>Betterment, Wealthfront</td>
+                        <td>Robo-advisors</td>
+                        <td>Established brand, scale</td>
+                        <td>Focus on SMEs (not just investing), GenAI capabilities</td>
+                    </tr>
+                    <tr>
+                        <td>QuickBooks, Xero</td>
+                        <td>Accounting software</td>
+                        <td>Large user base, integrations</td>
+                        <td>Advanced AI advisory (they only do bookkeeping)</td>
+                    </tr>
+                    <tr>
+                        <td>Generic AI Chatbots</td>
+                        <td>Consumer AI</td>
+                        <td>General intelligence</td>
+                        <td>Finance-specific training, compliance, data integrations</td>
+                    </tr>
+                    <tr>
+                        <td>Emerging AI Fintech</td>
+                        <td>Startups</td>
+                        <td>Innovation, agility</td>
+                        <td>First-mover advantage, platform model, team expertise</td>
+                    </tr>
+                </table>
+
+                <h3 style="margin-top: 30px;">Risk Mitigation</h3>
+                <div class="two-column">
+                    <div class="problem-highlight">
+                        <h4>Key Risks</h4>
+                        <ul>
+                            <li><strong>Regulatory:</strong> Financial advice regulations vary by jurisdiction</li>
+                            <li><strong>AI Errors:</strong> Incorrect advice could cause financial harm</li>
+                            <li><strong>Competition:</strong> Big tech (Google, Microsoft) enters space</li>
+                            <li><strong>Trust:</strong> Users skeptical of AI for money decisions</li>
+                            <li><strong>Data Security:</strong> Financial data breaches</li>
+                        </ul>
+                    </div>
+                    <div class="solution-highlight">
+                        <h4>Mitigation Strategies</h4>
+                        <ul>
+                            <li><strong>Regulatory:</strong> Hire compliance experts, obtain necessary licenses (RIA)</li>
+                            <li><strong>AI Errors:</strong> Human-in-the-loop for high-stakes decisions, insurance</li>
+                            <li><strong>Competition:</strong> Build network effects quickly, focus on SME niche</li>
+                            <li><strong>Trust:</strong> Transparency (explainable AI), third-party audits</li>
+                            <li><strong>Data Security:</strong> SOC 2 compliance, encryption, regular audits</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Investment Ask & Financial Projections -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>💰 Investment Opportunity</h2>
+            </div>
+            <div class="slide-content">
+                <h3>The Ask</h3>
+                <div style="text-align: center; margin: 30px 0;">
+                    <div class="stat-box" style="display: inline-block; padding: 40px 80px;">
+                        <div class="number" style="font-size: 3.5em;">$5M</div>
+                        <div class="label" style="font-size: 1.3em;">Seed Round Investment</div>
+                    </div>
+                </div>
+
+                <h3>Use of Funds</h3>
+                <div class="two-column">
+                    <div>
+                        <table>
+                            <tr>
+                                <th>Category</th>
+                                <th>Allocation</th>
+                                <th>Purpose</th>
+                            </tr>
+                            <tr>
+                                <td><strong>Product Development</strong></td>
+                                <td>40% ($2M)</td>
+                                <td>Engineering team (10 hires), AI infrastructure, feature development</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sales & Marketing</strong></td>
+                                <td>30% ($1.5M)</td>
+                                <td>Customer acquisition, content marketing, partnerships</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Operations & Compliance</strong></td>
+                                <td>15% ($750K)</td>
+                                <td>Legal, regulatory licensing, finance team</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Infrastructure</strong></td>
+                                <td>10% ($500K)</td>
+                                <td>Cloud costs, data feeds, office</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Reserve</strong></td>
+                                <td>5% ($250K)</td>
+                                <td>Contingency, unexpected opportunities</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="card">
+                        <h4>18-Month Runway</h4>
+                        <p>This investment provides:</p>
+                        <ul>
+                            <li>Time to reach 1,000 paying customers</li>
+                            <li>Achieve $2.4M ARR</li>
+                            <li>Validate product-market fit</li>
+                            <li>Build platform ecosystem</li>
+                            <li>Position for Series A ($20M at $80M valuation)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Financial Projections (3-Year)</h3>
+                <table>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Year 1</th>
+                        <th>Year 2</th>
+                        <th>Year 3</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Customers</strong></td>
+                        <td>250</td>
+                        <td>1,500</td>
+                        <td>5,000</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Annual Recurring Revenue</strong></td>
+                        <td>$600K</td>
+                        <td>$3.6M</td>
+                        <td>$12M</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gross Margin</strong></td>
+                        <td>55%</td>
+                        <td>70%</td>
+                        <td>75%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Operating Expenses</strong></td>
+                        <td>$3.2M</td>
+                        <td>$4.5M</td>
+                        <td>$7M</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Net Income</strong></td>
+                        <td>-$2.9M</td>
+                        <td>-$2M</td>
+                        <td>+$2M (profitable)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Customer Acquisition Cost</strong></td>
+                        <td>$2,400</td>
+                        <td>$1,200</td>
+                        <td>$600</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lifetime Value</strong></td>
+                        <td>$7,200</td>
+                        <td>$14,400</td>
+                        <td>$21,600</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LTV:CAC Ratio</strong></td>
+                        <td>3:1</td>
+                        <td>12:1</td>
+                        <td>36:1</td>
+                    </tr>
+                </table>
+
+                <h3 style="margin-top: 30px;">Return Potential</h3>
+                <div class="two-column">
+                    <div class="card">
+                        <h4>Conservative Scenario</h4>
+                        <ul>
+                            <li><strong>Year 3:</strong> $8M ARR, 3,000 customers</li>
+                            <li><strong>Valuation:</strong> $40M (5x revenue multiple)</li>
+                            <li><strong>Exit:</strong> Acquisition by accounting software company</li>
+                            <li><strong>Investor Return:</strong> 4x ($20M return on $5M investment)</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Optimistic Scenario</h4>
+                        <ul>
+                            <li><strong>Year 3:</strong> $20M ARR, 8,000 customers</li>
+                            <li><strong>Valuation:</strong> $200M (10x revenue, SaaS standard)</li>
+                            <li><strong>Exit:</strong> IPO or strategic acquisition (big tech)</li>
+                            <li><strong>Investor Return:</strong> 20x ($100M return)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Why Invest in FinSight AI?</h3>
+                <div class="three-column">
+                    <div class="stat-box">
+                        <div class="emoji">🎯</div>
+                        <div class="label"><strong>Massive Market</strong></div>
+                        <p style="margin-top: 10px; font-size: 0.9em;">$18B addressable market, 32M potential SME customers globally</p>
+                    </div>
+                    <div class="stat-box">
+                        <div class="emoji">🚀</div>
+                        <div class="label"><strong>Perfect Timing</strong></div>
+                        <p style="margin-top: 10px; font-size: 0.9em;">GenAI reached maturity in 2023-24, first-mover advantage available</p>
+                    </div>
+                    <div class="stat-box">
+                        <div class="emoji">🏆</div>
+                        <div class="label"><strong>Strong Team</strong></div>
+                        <p style="margin-top: 10px; font-size: 0.9em;">AI engineers from Google, financial experts from Goldman Sachs</p>
+                    </div>
+                </div>
+
+                <div class="three-column" style="margin-top: 15px;">
+                    <div class="stat-box">
+                        <div class="emoji">📊</div>
+                        <div class="label"><strong>Early Traction</strong></div>
+                        <p style="margin-top: 10px; font-size: 0.9em;">25 pilot customers, 4.5/5 satisfaction, 85% retention rate</p>
+                    </div>
+                    <div class="stat-box">
+                        <div class="emoji">🔒</div>
+                        <div class="label"><strong>Defensibility</strong></div>
+                        <p style="margin-top: 10px; font-size: 0.9em;">Network effects, proprietary data, platform ecosystem</p>
+                    </div>
+                    <div class="stat-box">
+                        <div class="emoji">💡</div>
+                        <div class="label"><strong>Disruptive Model</strong></div>
+                        <p style="margin-top: 10px; font-size: 0.9em;">Classic low-end disruption with 90% cost reduction</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Team & Closing -->
+        <div class="slide">
+            <div class="slide-header">
+                <h2>👥 Our Team</h2>
+            </div>
+            <div class="slide-content">
+                <h3>Founding Team</h3>
+                <div class="two-column">
+                    <div class="card">
+                        <h4>Abraham Kuriakose - CEO & Co-Founder</h4>
+                        <ul>
+                            <li>10 years fintech experience</li>
+                            <li>Former Product Lead at major financial institution</li>
+                            <li>MBA from top business school</li>
+                            <li><strong>Role:</strong> Strategy, fundraising, partnerships</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Vinayak Nair - CTO & Co-Founder</h4>
+                        <ul>
+                            <li>PhD in Machine Learning</li>
+                            <li>Former AI Engineer at Google</li>
+                            <li>Published 15+ papers on GenAI</li>
+                            <li><strong>Role:</strong> AI architecture, product development</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="two-column" style="margin-top: 20px;">
+                    <div class="card">
+                        <h4>Aditya Moon - CFO & Co-Founder</h4>
+                        <ul>
+                            <li>CFA Charterholder</li>
+                            <li>8 years at Goldman Sachs (Investment Banking)</li>
+                            <li>Expert in financial modeling & compliance</li>
+                            <li><strong>Role:</strong> Finance, regulatory, risk management</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>Yash Sable - CPO & Co-Founder</h4>
+                        <ul>
+                            <li>15 years product management</li>
+                            <li>Built SaaS products used by 1M+ users</li>
+                            <li>Expert in user experience design</li>
+                            <li><strong>Role:</strong> Product strategy, customer success</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Advisory Board</h3>
+                <div class="three-column">
+                    <div class="card">
+                        <h4>Dr. Sarah Chen</h4>
+                        <p><strong>MIT Professor</strong></p>
+                        <p>AI Ethics & Financial Applications</p>
+                    </div>
+                    <div class="card">
+                        <h4>Michael Rodriguez</h4>
+                        <p><strong>Former SEC Commissioner</strong></p>
+                        <p>Regulatory Compliance</p>
+                    </div>
+                    <div class="card">
+                        <h4>Lisa Thompson</h4>
+                        <p><strong>Serial Entrepreneur</strong></p>
+                        <p>3 successful fintech exits</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 50px; padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; color: white; text-align: center;">
+                    <h2 style="color: white; font-size: 2.5em; margin-bottom: 20px;">Join Us in Democratizing Financial Intelligence</h2>
+                    <p style="font-size: 1.3em; margin-bottom: 30px;">
+                        We're building the future of financial advisory—making institutional-grade intelligence
+                        accessible to every business and investor.
+                    </p>
+                    <div class="three-column" style="margin-top: 30px;">
+                        <div>
+                            <div class="number">$250B</div>
+                            <div class="label">Market Opportunity</div>
+                        </div>
+                        <div>
+                            <div class="number">32M</div>
+                            <div class="label">Potential Customers</div>
+                        </div>
+                        <div>
+                            <div class="number">20x</div>
+                            <div class="label">Return Potential</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 40px; font-size: 1.1em;">
+                        <p><strong>Contact:</strong> team@finsight.ai | www.finsight.ai</p>
+                        <p style="margin-top: 10px;"><strong>Investment Deck:</strong> Available upon request</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; text-align: center; font-size: 1.1em; color: #666;">
+                    <p><strong>Thank you for your time and consideration!</strong></p>
+                    <p style="margin-top: 10px;">Questions & Discussion</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="slide-number">
+        <span id="current-slide">1</span> / <span id="total-slides">11</span>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-button" id="prev-btn" onclick="previousSlide()">← Previous</button>
+        <button class="nav-button" id="next-btn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+
+            if (n >= totalSlides) {
+                currentSlide = totalSlides - 1;
+            } else if (n < 0) {
+                currentSlide = 0;
+            } else {
+                currentSlide = n;
+            }
+
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+
+            // Update button states
+            document.getElementById('prev-btn').disabled = currentSlide === 0;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+
+            // Scroll to top of slide content
+            slides[currentSlide].querySelector('.slide-content')?.scrollTo(0, 0);
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function previousSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+
+        // Progress bar animations
+        window.addEventListener('load', function() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+        });
+
+        // Print all slides
+        function printPresentation() {
+            window.print();
+        }
+    </script>
+</body>
+</html>

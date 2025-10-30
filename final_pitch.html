@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinSight AI - Investor Pitch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a1128;
+            color: #2d3748;
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            display: none;
+            width: 95%;
+            max-width: 1400px;
+            height: 90vh;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            padding: 80px 100px;
+            position: relative;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Title Slide */
+        .title-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+            color: white;
+        }
+
+        .title-slide h1 {
+            font-size: 5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+            color: white;
+        }
+
+        .title-slide .tagline {
+            font-size: 1.8em;
+            font-weight: 300;
+            margin-bottom: 60px;
+            color: #e0e7ff;
+        }
+
+        .title-slide .stats {
+            display: flex;
+            gap: 60px;
+            margin-top: 60px;
+            justify-content: center;
+        }
+
+        .title-slide .stat {
+            text-align: center;
+        }
+
+        .title-slide .stat-number {
+            font-size: 3em;
+            font-weight: 700;
+            color: #fbbf24;
+        }
+
+        .title-slide .stat-label {
+            font-size: 1.1em;
+            color: #e0e7ff;
+            margin-top: 10px;
+        }
+
+        .title-slide .team-info {
+            margin-top: 80px;
+            font-size: 1em;
+            color: #c7d2fe;
+        }
+
+        /* Content Slides */
+        .slide h2 {
+            font-size: 2.8em;
+            color: #1e3a8a;
+            margin-bottom: 50px;
+            font-weight: 700;
+            border-bottom: 4px solid #fbbf24;
+            padding-bottom: 20px;
+        }
+
+        .slide h3 {
+            font-size: 1.8em;
+            color: #1e40af;
+            margin: 35px 0 20px 0;
+            font-weight: 600;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            font-size: 1.4em;
+            line-height: 2;
+            color: #374151;
+            padding-left: 40px;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #f59e0b;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-top: 30px;
+        }
+
+        .highlight-box {
+            background: #eff6ff;
+            border-left: 6px solid #2563eb;
+            padding: 40px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+
+        .highlight-box h3 {
+            margin-top: 0;
+            color: #1e3a8a;
+            font-size: 2em;
+        }
+
+        .highlight-box p {
+            font-size: 1.5em;
+            color: #374151;
+            line-height: 1.6;
+        }
+
+        .problem-box {
+            background: #fef3c7;
+            border-left: 6px solid #f59e0b;
+        }
+
+        .solution-box {
+            background: #d1fae5;
+            border-left: 6px solid #10b981;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+        }
+
+        .stat-card .number {
+            font-size: 3em;
+            font-weight: 700;
+            color: #fbbf24;
+        }
+
+        .stat-card .label {
+            font-size: 1.1em;
+            margin-top: 10px;
+            color: #e0e7ff;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            padding: 30px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: #2563eb;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .feature-card h4 {
+            font-size: 1.3em;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            font-size: 1.1em;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .big-number {
+            font-size: 6em;
+            font-weight: 700;
+            color: #1e3a8a;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .big-number span {
+            color: #f59e0b;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 60px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .cta-box h3 {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .cta-box p {
+            font-size: 1.4em;
+            color: #e0e7ff;
+            margin-bottom: 30px;
+        }
+
+        .cta-box .contact {
+            font-size: 1.2em;
+            color: #fbbf24;
+            font-weight: 600;
+        }
+
+        /* Navigation */
+        .nav-controls {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: white;
+            border: 2px solid #1e3a8a;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            color: #1e3a8a;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #1e3a8a;
+            color: white;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            position: fixed;
+            bottom: 40px;
+            left: 40px;
+            background: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1e3a8a;
+            border: 2px solid #1e3a8a;
+        }
+
+        /* Charts & Visualizations */
+
+        /* Bar Chart */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 300px;
+            gap: 40px;
+            margin: 40px 0;
+            padding: 20px 0;
+            border-bottom: 3px solid #1e3a8a;
+        }
+
+        .bar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .bar-fill {
+            width: 100%;
+            background: linear-gradient(180deg, #2563eb 0%, #1e3a8a 100%);
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.5em;
+            transition: all 0.5s ease;
+        }
+
+        .bar-label {
+            margin-top: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #1e3a8a;
+            text-align: center;
+        }
+
+        /* Platform Ecosystem Diagram */
+        .ecosystem-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 50px 0;
+            position: relative;
+        }
+
+        .ecosystem-box {
+            background: white;
+            border: 3px solid #2563eb;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            flex: 1;
+            margin: 0 15px;
+        }
+
+        .ecosystem-center {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+            transform: scale(1.1);
+        }
+
+        .ecosystem-box h4 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            color: #1e3a8a;
+        }
+
+        .ecosystem-center h4 {
+            color: white;
+        }
+
+        .ecosystem-box p {
+            font-size: 1.1em;
+            color: #6b7280;
+        }
+
+        .ecosystem-center p {
+            color: #e0e7ff;
+        }
+
+        .arrow-right {
+            font-size: 3em;
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        /* Disruption Curve */
+        .disruption-chart {
+            position: relative;
+            height: 350px;
+            margin: 40px 0;
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 30px;
+        }
+
+        .axis {
+            position: absolute;
+        }
+
+        .axis-y {
+            left: 30px;
+            top: 20px;
+            bottom: 50px;
+            border-left: 3px solid #1e3a8a;
+        }
+
+        .axis-x {
+            left: 30px;
+            right: 30px;
+            bottom: 50px;
+            border-bottom: 3px solid #1e3a8a;
+        }
+
+        .axis-label {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .y-label {
+            position: absolute;
+            left: -20px;
+            top: -30px;
+            transform: rotate(-90deg);
+            transform-origin: left;
+        }
+
+        .x-label {
+            position: absolute;
+            right: -80px;
+            bottom: -10px;
+        }
+
+        .curve {
+            position: absolute;
+            left: 60px;
+            bottom: 80px;
+            width: calc(100% - 90px);
+            height: 200px;
+        }
+
+        .curve-line {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        .traditional-curve {
+            background: #6b7280;
+            bottom: 100px;
+            transform: rotate(2deg);
+        }
+
+        .finsight-curve {
+            background: linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%);
+            bottom: 0;
+            height: 6px;
+            animation: growCurve 2s ease-out;
+        }
+
+        @keyframes growCurve {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .curve-label {
+            position: absolute;
+            font-size: 1.1em;
+            font-weight: 600;
+            padding: 5px 15px;
+            border-radius: 4px;
+        }
+
+        .traditional-label {
+            background: #6b7280;
+            color: white;
+            top: 20px;
+            right: 50px;
+        }
+
+        .finsight-label {
+            background: #10b981;
+            color: white;
+            bottom: 20px;
+            right: 50px;
+        }
+
+        /* Line Chart for Growth */
+        .line-chart {
+            position: relative;
+            height: 300px;
+            margin: 40px 0;
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 30px;
+        }
+
+        .chart-grid {
+            position: absolute;
+            left: 60px;
+            right: 30px;
+            top: 30px;
+            bottom: 50px;
+        }
+
+        .grid-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            border-top: 1px dashed #d1d5db;
+        }
+
+        .data-point {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #2563eb;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+            transform: translate(-50%, -50%);
+        }
+
+        .data-label {
+            position: absolute;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1e3a8a;
+            transform: translateX(-50%);
+        }
+
+        .chart-line {
+            position: absolute;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981 0%, #2563eb 100%);
+            border-radius: 2px;
+            animation: drawLine 1.5s ease-out;
+        }
+
+        @keyframes drawLine {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        /* Revenue Pie */
+        .revenue-visual {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .pie-chart {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #2563eb 0% 80%,
+                #10b981 80% 90%,
+                #f59e0b 90% 95%,
+                #ef4444 95% 100%
+            );
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+        }
+
+        .pie-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+        }
+
+        .legend-text {
+            font-size: 1.2em;
+            color: #374151;
+        }
+
+        .legend-percent {
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-left: auto;
+        }
+
+        /* Simple table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            font-size: 1.2em;
+        }
+
+        th {
+            background: #1e3a8a;
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #374151;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .emphasis {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        /* Business Model Canvas - Simplified */
+        .bmc-simple {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .bmc-item {
+            background: #f9fafb;
+            border: 2px solid #e5e7eb;
+            padding: 25px;
+            border-radius: 8px;
+        }
+
+        .bmc-item h4 {
+            color: #1e3a8a;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .bmc-item ul {
+            margin-left: 0;
+        }
+
+        .bmc-item li {
+            font-size: 1.1em;
+            padding-left: 25px;
+            margin-bottom: 10px;
+        }
+
+        .bmc-item li:before {
+            font-size: 1em;
+        }
+
+        .value-prop {
+            background: #eff6ff;
+            border: 3px solid #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+
+        <!-- Slide 1: Title -->
+        <div class="slide active title-slide">
+            <h1>FinSight AI</h1>
+            <p class="tagline">AI-Powered Financial Intelligence for Every Business</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">$250B</div>
+                    <div class="stat-label">Market Opportunity</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">90%</div>
+                    <div class="stat-label">Cost Reduction</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">32M</div>
+                    <div class="stat-label">Target SMEs</div>
+                </div>
+            </div>
+            <div class="team-info">
+                Group 101, Tutorial 19<br>
+                Abraham Kuriakose | Vinayak Nair | Aditya Moon | Yash Sable
+            </div>
+        </div>
+
+        <!-- Slide 2: The Problem -->
+        <div class="slide">
+            <h2>The Problem</h2>
+            <div class="content">
+                <div class="highlight-box problem-box">
+                    <h3>85% of SMEs lack access to sophisticated financial advisory</h3>
+                </div>
+
+                <h3 style="text-align: center; margin-top: 30px;">Cost Barrier Analysis</h3>
+                <div class="bar-chart">
+                    <div class="bar">
+                        <div class="bar-fill" style="height: 90%;">$50K+</div>
+                        <div class="bar-label">Traditional<br>Advisory</div>
+                    </div>
+                    <div class="bar">
+                        <div class="bar-fill" style="height: 45%; background: linear-gradient(180deg, #6b7280 0%, #4b5563 100%);">$25K</div>
+                        <div class="bar-label">Boutique<br>Firms</div>
+                    </div>
+                    <div class="bar">
+                        <div class="bar-fill" style="height: 20%; background: linear-gradient(180deg, #6b7280 0%, #4b5563 100%);">$10K</div>
+                        <div class="bar-label">Robo-<br>Advisors</div>
+                    </div>
+                    <div class="bar">
+                        <div class="bar-fill" style="height: 5%; background: linear-gradient(180deg, #10b981 0%, #059669 100%);">$2.4K</div>
+                        <div class="bar-label"><strong>FinSight<br>AI</strong></div>
+                    </div>
+                </div>
+
+                <div class="two-col" style="margin-top: 30px;">
+                    <div>
+                        <h3>Current Barriers</h3>
+                        <ul>
+                            <li>Prohibitive costs for SMEs</li>
+                            <li>20-40 hours monthly manual work</li>
+                            <li>No personalized insights</li>
+                            <li>Complex compliance requirements</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Market Gap</h3>
+                        <ul>
+                            <li>Big banks serve only large enterprises</li>
+                            <li>No comprehensive AI solution for SMEs</li>
+                            <li><strong>$18B underserved market by 2028</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Our Solution -->
+        <div class="slide">
+            <h2>Our Solution</h2>
+            <div class="content">
+                <div class="highlight-box solution-box">
+                    <h3>Institutional-grade AI advisory at 10% of traditional cost</h3>
+                </div>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>Smart Analysis</h4>
+                        <p>AI-powered financial modeling, forecasting, and risk assessment</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>24/7 Advisory</h4>
+                        <p>Conversational AI with industry-specific expertise</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Real-Time Insights</h4>
+                        <p>Live market intelligence and proactive alerts</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Compliance Built-In</h4>
+                        <p>Automated regulatory frameworks and audit trails</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Easy Integration</h4>
+                        <p>Connects with 500+ banking and accounting platforms</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>API Platform</h4>
+                        <p>Open ecosystem for third-party developers</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Technology -->
+        <div class="slide">
+            <h2>Technology: Generative AI</h2>
+            <div class="content">
+                <div class="two-col">
+                    <div>
+                        <h3>What is GenAI?</h3>
+                        <ul>
+                            <li>Large Language Models (LLMs)</li>
+                            <li>Natural language understanding</li>
+                            <li>Pattern recognition in data</li>
+                            <li>Contextual reasoning</li>
+                            <li>Content generation</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Our Innovation</h3>
+                        <ul>
+                            <li>Finance-specific model training</li>
+                            <li>Real-time data integration (RAG)</li>
+                            <li>Explainable AI architecture</li>
+                            <li>Compliance-by-design system</li>
+                            <li>Multi-modal intelligence</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="stats-grid" style="margin-top: 50px;">
+                    <div class="stat-card">
+                        <div class="number">95%</div>
+                        <div class="label">Accuracy in financial analysis</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">100x</div>
+                        <div class="label">Faster than human analysts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">24/7</div>
+                        <div class="label">Always available</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Innovation - Platform -->
+        <div class="slide">
+            <h2>Platform Innovation</h2>
+            <div class="content">
+                <h3 style="text-align: center;">Two-Sided Marketplace with Network Effects</h3>
+                <div class="ecosystem-diagram">
+                    <div class="ecosystem-box">
+                        <h4>SMEs & Investors</h4>
+                        <p>Financial intelligence<br>Integrated tools<br>Ecosystem benefits</p>
+                    </div>
+                    <div class="arrow-right">→</div>
+                    <div class="ecosystem-box ecosystem-center">
+                        <h4>FinSight AI Platform</h4>
+                        <p>Core AI Models<br>API Infrastructure<br>Data Ecosystem</p>
+                    </div>
+                    <div class="arrow-right">←</div>
+                    <div class="ecosystem-box">
+                        <h4>Developers</h4>
+                        <p>Build on APIs<br>Access AI models<br>Reach customers</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 50px;">Open Innovation Strategy</h3>
+                <div class="two-col">
+                    <div>
+                        <h4 style="color: #1e3a8a; font-size: 1.3em; margin-bottom: 15px;">Inbound Innovation</h4>
+                        <ul>
+                            <li>University research partnerships (MIT, Stanford)</li>
+                            <li>Open source AI models</li>
+                            <li>Customer co-creation</li>
+                            <li>Data partnerships (Bloomberg, Refinitiv)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: #1e3a8a; font-size: 1.3em; margin-bottom: 15px;">Outbound Innovation</h4>
+                        <ul>
+                            <li>Public APIs for developers</li>
+                            <li>Open financial benchmarks</li>
+                            <li>Research publication</li>
+                            <li>Developer community & hackathons</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Disruption -->
+        <div class="slide">
+            <h2>Market Disruption</h2>
+            <div class="content">
+                <h3>Low-End Disruptive Innovation</h3>
+                <table>
+                    <tr>
+                        <th>Dimension</th>
+                        <th>Traditional Advisory</th>
+                        <th>FinSight AI</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Target Market</strong></td>
+                        <td>Large enterprises</td>
+                        <td>Underserved SMEs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Price</strong></td>
+                        <td>$50,000+/year</td>
+                        <td>$2,400/year (95% cheaper)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Business Model</strong></td>
+                        <td>Labor-intensive</td>
+                        <td>Tech-enabled, scalable</td>
+                    </tr>
+                </table>
+
+                <h3 style="text-align: center; margin-top: 40px;">Disruption Trajectory</h3>
+                <div class="disruption-chart">
+                    <div class="axis axis-y">
+                        <span class="axis-label y-label">Performance</span>
+                    </div>
+                    <div class="axis axis-x">
+                        <span class="axis-label x-label">Time →</span>
+                    </div>
+                    <div class="curve">
+                        <div class="curve-line traditional-curve"></div>
+                        <div class="curve-line finsight-curve"></div>
+                        <div class="curve-label traditional-label">Traditional Advisory</div>
+                        <div class="curve-label finsight-label">FinSight AI (Starting low, improving rapidly)</div>
+                    </div>
+                </div>
+
+                <p style="text-align: center; font-size: 1.3em; color: #374151; margin-top: 20px;">
+                    <strong>GenAI emerging as dominant design</strong> for financial intelligence — similar to how PC architecture became standard in computing
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Business Model -->
+        <div class="slide">
+            <h2>Business Model</h2>
+            <div class="content">
+                <div class="two-col">
+                    <div>
+                        <div class="bmc-item value-prop">
+                            <h4>Value Proposition</h4>
+                            <ul>
+                                <li>90% cost reduction</li>
+                                <li>Institutional-grade intelligence</li>
+                                <li>24/7 accessibility</li>
+                                <li>Built-in compliance</li>
+                            </ul>
+                        </div>
+                        <div class="bmc-item">
+                            <h4>Customer Segments</h4>
+                            <ul>
+                                <li>SMEs (10-500 employees)</li>
+                                <li>Independent advisors</li>
+                                <li>Retail investors</li>
+                                <li>Fintech platforms (B2B)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <h3>Revenue Mix</h3>
+                        <div class="revenue-visual">
+                            <div class="pie-chart"></div>
+                            <div class="pie-legend">
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: #2563eb;"></div>
+                                    <span class="legend-text">SaaS Subscriptions</span>
+                                    <span class="legend-percent">80%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: #10b981;"></div>
+                                    <span class="legend-text">API Usage</span>
+                                    <span class="legend-percent">10%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: #f59e0b;"></div>
+                                    <span class="legend-text">Platform Commission</span>
+                                    <span class="legend-percent">5%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: #ef4444;"></div>
+                                    <span class="legend-text">Premium Services</span>
+                                    <span class="legend-percent">5%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid" style="margin-top: 40px;">
+                    <div class="stat-card">
+                        <div class="number">$199</div>
+                        <div class="label">Starting price/month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">36:1</div>
+                        <div class="label">LTV:CAC ratio (Year 3)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">75%</div>
+                        <div class="label">Gross margin target</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Traction -->
+        <div class="slide">
+            <h2>Traction & Growth</h2>
+            <div class="content">
+                <div class="two-col">
+                    <div>
+                        <h3>Early Traction</h3>
+                        <ul>
+                            <li>Working MVP deployed</li>
+                            <li>25 pilot customers active</li>
+                            <li>4.5/5 satisfaction score</li>
+                            <li>85% retention rate</li>
+                            <li>35% referral rate</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>3-Year Trajectory</h3>
+                        <ul>
+                            <li>Year 1: 250 customers</li>
+                            <li>Year 2: 1,500 customers</li>
+                            <li>Year 3: 5,000 customers</li>
+                            <li><strong>$12M ARR, profitable</strong></li>
+                            <li>Series A ready ($20M @ $80M)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3 style="text-align: center; margin-top: 40px;">Revenue Growth Projection</h3>
+                <div class="line-chart">
+                    <div class="chart-grid">
+                        <div class="grid-line" style="top: 0;"></div>
+                        <div class="grid-line" style="top: 33%;"></div>
+                        <div class="grid-line" style="top: 66%;"></div>
+                    </div>
+
+                    <!-- Year 1 -->
+                    <div class="data-point" style="left: 20%; bottom: 60px;"></div>
+                    <div class="data-label" style="left: 20%; bottom: 30px;">Year 1<br>$600K</div>
+
+                    <!-- Year 2 -->
+                    <div class="data-point" style="left: 50%; bottom: 120px;"></div>
+                    <div class="data-label" style="left: 50%; bottom: 30px;">Year 2<br>$3.6M</div>
+
+                    <!-- Year 3 -->
+                    <div class="data-point" style="left: 80%; bottom: 200px;"></div>
+                    <div class="data-label" style="left: 80%; bottom: 30px;">Year 3<br>$12M</div>
+
+                    <!-- Connecting lines -->
+                    <div class="chart-line" style="left: 20%; bottom: 60px; width: 30%; transform: rotate(20deg); transform-origin: left center;"></div>
+                    <div class="chart-line" style="left: 50%; bottom: 120px; width: 30%; transform: rotate(25deg); transform-origin: left center;"></div>
+                </div>
+
+                <div class="feature-grid" style="margin-top: 40px;">
+                    <div class="feature-card">
+                        <h4>Phase 1: Beta (M 1-6)</h4>
+                        <p>100 beta users, validate product-market fit</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Phase 2: Launch (M 7-18)</h4>
+                        <p>1,000 paying customers, partnerships</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Phase 3: Scale (M 19-36)</h4>
+                        <p>10,000 customers, global expansion</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: The Ask -->
+        <div class="slide">
+            <h2>Investment Opportunity</h2>
+            <div class="content">
+                <div class="big-number">
+                    <span>$5M</span> Seed Round
+                </div>
+
+                <div class="two-col">
+                    <div>
+                        <h3>Use of Funds</h3>
+                        <ul>
+                            <li>Product development: 40%</li>
+                            <li>Sales & marketing: 30%</li>
+                            <li>Operations & compliance: 15%</li>
+                            <li>Infrastructure: 10%</li>
+                            <li>Reserve: 5%</li>
+                        </ul>
+                        <p style="margin-top: 20px; font-size: 1.2em; color: #6b7280;"><strong>18-month runway</strong> to 1,000 customers & Series A</p>
+                    </div>
+                    <div>
+                        <h3>Return Potential</h3>
+                        <ul>
+                            <li><strong>Conservative:</strong> 4x return</li>
+                            <li><strong>Base case:</strong> 10x return</li>
+                            <li><strong>Optimistic:</strong> 20x return</li>
+                        </ul>
+                        <p style="margin-top: 20px; font-size: 1.2em; color: #6b7280;">Exit via strategic acquisition (accounting software, fintech) or IPO</p>
+                    </div>
+                </div>
+
+                <div class="stats-grid" style="margin-top: 50px;">
+                    <div class="stat-card">
+                        <div class="number">$18B</div>
+                        <div class="label">Addressable market by 2028</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">$12M</div>
+                        <div class="label">Year 3 ARR target</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">32M</div>
+                        <div class="label">Global SME customers</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Team -->
+        <div class="slide">
+            <h2>Our Team</h2>
+            <div class="content">
+                <div class="two-col">
+                    <div class="feature-card">
+                        <h4>Abraham Kuriakose - CEO</h4>
+                        <p>10 years fintech, former Product Lead at major financial institution, MBA</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Vinayak Nair - CTO</h4>
+                        <p>PhD in ML, former AI Engineer at Google, 15+ GenAI publications</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Aditya Moon - CFO</h4>
+                        <p>CFA, 8 years at Goldman Sachs, compliance expert</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>Yash Sable - CPO</h4>
+                        <p>15 years product, built SaaS for 1M+ users</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="margin-top: 50px;">
+                    <h3>Advisory Board</h3>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 20px;">
+                        <p style="font-size: 1.2em;"><strong>Dr. Sarah Chen</strong><br>MIT Professor, AI Ethics</p>
+                        <p style="font-size: 1.2em;"><strong>Michael Rodriguez</strong><br>Former SEC Commissioner</p>
+                        <p style="font-size: 1.2em;"><strong>Lisa Thompson</strong><br>Serial Entrepreneur, 3 exits</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11: Closing -->
+        <div class="slide">
+            <h2>Why Invest in FinSight AI?</h2>
+            <div class="content">
+                <div class="feature-grid">
+                    <div class="stat-card">
+                        <div class="number">$250B</div>
+                        <div class="label">Massive GenAI market in finance</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">Perfect Timing</div>
+                        <div class="label">GenAI maturity meets market demand</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">Proven Team</div>
+                        <div class="label">Google AI + Goldman Sachs</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">Traction</div>
+                        <div class="label">25 pilots, 85% retention</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">Defensible</div>
+                        <div class="label">Network effects + proprietary data</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number">Disruptive</div>
+                        <div class="label">Low-end disruption strategy</div>
+                    </div>
+                </div>
+
+                <div class="cta-box">
+                    <h3>Join us in democratizing financial intelligence</h3>
+                    <p>Making institutional-grade AI advisory accessible to every business</p>
+                    <div class="contact">
+                        team@finsight.ai | www.finsight.ai
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="slide-counter">
+        <span id="current">1</span> / <span id="total">11</span>
+    </div>
+
+    <div class="nav-controls">
+        <button class="nav-btn" id="prev" onclick="changeSlide(-1)">← Previous</button>
+        <button class="nav-btn" id="next" onclick="changeSlide(1)">Next →</button>
+    </div>
+
+    <script>
+        let current = 0;
+        const slides = document.querySelectorAll('.slide');
+        const total = slides.length;
+
+        document.getElementById('total').textContent = total;
+
+        function showSlide(n) {
+            slides.forEach(s => s.classList.remove('active'));
+
+            if (n >= total) current = total - 1;
+            else if (n < 0) current = 0;
+            else current = n;
+
+            slides[current].classList.add('active');
+            document.getElementById('current').textContent = current + 1;
+
+            document.getElementById('prev').disabled = current === 0;
+            document.getElementById('next').disabled = current === total - 1;
+        }
+
+        function changeSlide(direction) {
+            showSlide(current + direction);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+
+        showSlide(0);
+    </script>
+</body>
+</html>
