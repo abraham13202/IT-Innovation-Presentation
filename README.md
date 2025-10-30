@@ -2,7 +2,7 @@
 
 ## 📁 Files Overview
 
-### 1. **final_pitch.html** ⭐ USE THIS FOR YOUR PRESENTATION
+### 1. **final_pitch.html**
 - Professional design with visualizations
 - Minimal text, maximum visual impact
 - All innovation concepts covered
@@ -17,7 +17,3 @@
 ### 3. **startup_pitch.html**
 - Earlier version without visualizations
 - Backup option
-
-
-
-Questions or need adjustments? Open the HTML files in any text editor to customize.
